@@ -36,7 +36,14 @@ def main() -> int:
     path = os.path.join(out_dir, "entry.txt")
     with open(path, "w", encoding="utf-8") as f:
         f.write(LINE + "\n")
-    print(f"wrote {path} ({chars} characters)")
+    # Read the file back and verify it holds exactly the line we meant:
+    # a grader run must never silently ship a truncated or altered text.
+    with open(path, "r", encoding="utf-8") as f:
+        written = f.read()
+    if written != LINE + "\n":
+        print(f"verification failed: {path} does not match the line", file=sys.stderr)
+        return 1
+    print(f"wrote {path} ({chars} characters, verified)")
     return 0
 
 
